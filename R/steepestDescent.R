@@ -6,7 +6,7 @@
 #' @description Evaluate steepest descent on a quadratic function, assuming a
 #'   positive-definite symmetric matrix.
 #'
-#' @param par	Initial values for the parameters to be optimized over.
+#' @param x_0	Initial values for the parameters to be optimized over.
 #'
 #' @param fn A function to be minimized (or maximized), with first argument the
 #'   vector of parameters over which minimization is to take place. It should
@@ -48,7 +48,7 @@
 #'   
 #' @author Jason Mitchell 
 #' 
-steepestDescent <- function(par, fn, A, d, c, verbose=FALSE, alpha=0.01, tol=1e-6){ 
+steepest_descent <- function(x_0, fn, A, d, c, verbose=FALSE, alpha=0.01, tol=1e-6){ 
   
   # par <- c(4, 5)
   # fn <- function(x1, x2, A, d, c){
@@ -63,7 +63,7 @@ steepestDescent <- function(par, fn, A, d, c, verbose=FALSE, alpha=0.01, tol=1e-
   
   # Ensure A is positive definite. 
   stopifnot("Not all eigenvalues greater than zero.\n" = (eigen(A)$values > rep(0, nrow(A))))
-  par_k <- par
+  par_k <- x_0
   k <- 1
   ans <- tibble::as_tibble(t(par_k))
   repeat{

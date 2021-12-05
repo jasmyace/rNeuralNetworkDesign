@@ -8,7 +8,7 @@
 #'   function \eqn{F(**x**)}, assuming a positive-definite symmetric matrix, to
 #'   find its minimum.
 #'   
-#' @param x	Initial guess for the location of a minimum.
+#' @param x_0	Initial guess for the location of a minimum.
 #'
 #' @param fn A function to be minimized (or maximized), with first argument the
 #'   vector of parameters over which minimization is to take place. It should
@@ -50,7 +50,7 @@
 #'   
 #' @author Jason Mitchell 
 #' 
-conjuage_gradient_quad <- function(x, fn, A, d, c, beta="hs", verbose=FALSE, alpha=0.01, tol=1e-6){ 
+conjuage_gradient_quad <- function(x_0, fn, A, d, c, beta="hs", verbose=FALSE, alpha=0.01, tol=1e-6){ 
   
   # x <- c(0.8, -0.25)
   # fn <- function(x1, x2, A, d, c){
@@ -66,8 +66,8 @@ conjuage_gradient_quad <- function(x, fn, A, d, c, beta="hs", verbose=FALSE, alp
   # Ensure A is positive definite. 
   stopifnot("Not all eigenvalues greater than zero.\n" = (eigen(A)$values > rep(0, nrow(A))))
   k <- 0
-  x_km1 <- x
-  ans <- tibble::as_tibble(t(x))
+  x_km1 <- x_0
+  ans <- tibble::as_tibble(t(x_0))
   
   repeat{
     
