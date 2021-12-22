@@ -1,0 +1,119 @@
+---
+title: "ch5_solvedProblems"
+author: "Jason Mitchell"
+date: "12/12/2021"
+output: pdf_document
+---
+
+\begin{enumerate}
+
+\item[\bf{P5.3}]{\bf{Which of the following sets of vectors are independent?  Find the dimension of the vector space spanned by each set.}}
+
+\begin{enumerate}
+
+\item[\bf{i.}]{$\begin{bmatrix}
+    1 \\
+    1 \\
+    1 \\\end{bmatrix}, \begin{bmatrix}
+    1 \\
+    0 \\
+    1 \\\end{bmatrix}, \begin{bmatrix}
+    1 \\
+    2 \\
+    1 \\\end{bmatrix}$}
+
+{\bf Answer.} Let 
+\begin{align}
+\mathbf{0} = c_1\mathbf{x}_1 + c_2\mathbf{x}_2 + c_3\mathbf{x}_3, \label{P5.3.i.1}
+\end{align}
+where the vectors $\mathbf{x}_1$, $\mathbf{x}_2$, and $\mathbf{x}_3$ correspond with the above.  For the set ${\mathbf{x}_1, \mathbf{x}_2, \mathbf{x}_3}$ to be linearly independent, $c_1 = c_2 = c_3 = 0$ must be the only solution satisfying (\ref{P5.3.i.1}). 
+
+Set up a matrix $[\mathbf{x}_1 \,\, \mathbf{x}_2 \,\, \mathbf{x}_3]$ via the three provided vectors, and augment with the zero vector $\mathbf{0}$ to create $[\mathbf{x}_1 \,\, \mathbf{x}_2 \,\, \mathbf{x}_3 \,\, \mathbf{0}]$,  and row reduce. I.e., 
+\begin{align}
+\begin{bmatrix}
+    1 & 1 & 1 & 0 \\
+    1 & 0 & 2 & 0 \\
+    1 & 1 & 1 & 0 \\\end{bmatrix} \sim \cdots \sim \begin{bmatrix}
+    1 & 0 & 2 & 0 \\
+    0 & 1 & -1 & 0 \\
+    0 & 0 & 0 & 0 \\\end{bmatrix}.
+\end{align}
+As the resulting matrix lacks a pivot in the third row, the system contains a free variable, meaning that a solution other than the trivial exists.  Thus, the system is linearly dependent.  
+
+To demonstrate this explicitly, write out the solution suggested by the row-reduced matrix, using the free-variable row as a parameter.  
+\begin{align}
+\begin{bmatrix}
+c_1 \\
+c_2 \\ 
+c_3 \\
+\end{bmatrix} = 
+\begin{bmatrix}
+-2c_3 \\
+c_3 \\ 
+c_3 \\
+\end{bmatrix} = 
+\begin{bmatrix}
+-2 \\
+1 \\ 
+1 \\ 
+\end{bmatrix} c_3.
+\end{align}
+Let $c_3 = 1$, implying that $c_1 = -2$ and $c_2 = 1$.  So then, $c_1\mathbf{x}_1 + c_2\mathbf{x}_2 + c_3\mathbf{x}_3 = -2\mathbf{x}_1 + \mathbf{x}_2 + \mathbf{x}_3 = \mathbf{0}$, a non-trivial solution.  So, again, the set of vectors is linearly dependent. 
+
+\item[\bf{ii.}]{$\sin t, \cos t, 2\cos\left(t + \frac{\pi}{4}\right)$}
+
+\item[\bf{iii.}]{$\begin{bmatrix}
+    1 \\
+    1 \\
+    1 \\
+    1 \\\end{bmatrix}, \begin{bmatrix}
+    1 \\
+    0 \\
+    1 \\ 
+    1 \\\end{bmatrix}, \begin{bmatrix}
+    1 \\
+    2 \\
+    1 \\ 
+    1 \\\end{bmatrix}$}
+    
+{\bf Answer.} Proceed similarly to part $\mathbf{i}$. Let 
+\begin{align}
+\mathbf{0} = c_1\mathbf{x}_1 + c_2\mathbf{x}_2 + c_3\mathbf{x}_3, \label{P5.3.iii.1}
+\end{align}
+where the vectors $\mathbf{x}_1$, $\mathbf{x}_2$, and $\mathbf{x}_3$ correspond with the above.  For the set ${\mathbf{x}_1, \mathbf{x}_2, \mathbf{x}_3}$ to be linearly independent, $c_1 = c_2 = c_3 = 0$ must be the only solution satisfying (\ref{P5.3.iii.1}). 
+
+Set up a matrix $[\mathbf{x}_1 \,\, \mathbf{x}_2 \,\, \mathbf{x}_3]$ via the three provided vectors, and augment with the zero vector $\mathbf{0}$ to create $[\mathbf{x}_1 \,\, \mathbf{x}_2 \,\, \mathbf{x}_3 \,\, \mathbf{0}]$,  and row reduce. I.e., 
+\begin{align}
+\begin{bmatrix}
+    1 & 1 & 1 & 0 \\
+    1 & 0 & 2 & 0 \\
+    1 & 1 & 1 & 0 \\
+    1 & 1 & 1 & 0 \\\end{bmatrix} \sim \cdots \sim \begin{bmatrix}
+    1 & 0 & 2 & 0 \\
+    0 & 1 & -1 & 0 \\
+    0 & 0 & 0 & 0 \\\end{bmatrix}.
+\end{align}
+As the resulting matrix lacks a pivot in the third row, the system contains a free variable, meaning that a solution other than the trivial exists.  Thus, the system is linearly dependent.  
+
+To demonstrate this explicitly, write out the solution suggested by the row-reduced matrix, using the free-variable row as a parameter.  
+\begin{align}
+\begin{bmatrix}
+c_1 \\
+c_2 \\ 
+c_3 \\
+\end{bmatrix} = 
+\begin{bmatrix}
+-2c_3 \\
+c_3 \\ 
+c_3 \\
+\end{bmatrix} = 
+\begin{bmatrix}
+-2 \\
+1 \\ 
+1 \\ 
+\end{bmatrix} c_3.
+\end{align}
+Let $c_3 = 1$, implying that $c_1 = -2$ and $c_2 = 1$.  So then, $c_1\mathbf{x}_1 + c_2\mathbf{x}_2 + c_3\mathbf{x}_3 = -2\mathbf{x}_1 + \mathbf{x}_2 + \mathbf{x}_3 = \mathbf{0}$, a non-trivial solution.  So, again, the set of vectors is linearly dependent. 
+
+\end{enumerate}
+\end{enumerate}

@@ -1,0 +1,308 @@
+---
+title: "ch4_solvedProblems"
+author: "Jason Mitchell"
+date: "12/17/2021"
+output: pdf_document
+header-includes:
+  - \usepackage{pdflscape}
+  - \usepackage{mathtools}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[CO,CE]{Chapter 4 Solved Problems}
+  - \fancyfoot[CO,CE]{Perceptron Learning Rule}
+  - \fancyfoot[LE,RO]{\thepage}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(tibble)
+library(dplyr)
+library(latex2exp)
+library(gridExtra)
+```
+
+**P4.1** **Solve the three simple classification problems shown in Figure P4.1 by drauing a decision boundary.  Find weight and bias values that result in single-neuron perceptrons with the chosen decision boundaries.** 
+
+**Answer.** blah blah 
+
+**P4.2**. **Convert the classification problem defined below into an equivalent problem definition consisting of inequalities constraining weight and bias values.**
+\begin{align*}
+\left\{\mathbf{p}_1 = \begin{bmatrix}
+    0 \\
+    2 \end{bmatrix}, t_1 = 1\right\}, 
+\left\{\mathbf{p}_2 = \begin{bmatrix}
+    1 \\
+    0 \end{bmatrix}, t_2 = 1\right\},
+\left\{\mathbf{p}_3 = \begin{bmatrix}
+    0 \\
+    -2 \end{bmatrix}, t_3 = 0\right\},
+\left\{\mathbf{p}_4 = \begin{bmatrix}
+    2 \\
+    0 \end{bmatrix}, t_4 = 0\right\}
+\end{align*}
+
+**Answer.** Two of the inputs have targets with values of 1, while the other two have targets of 0.  Hence, the use of the \texttt{hardlim} function as the activation function $f(n)$ seems appropriate.  Recall that the \texttt{hardlim} equals 1 when $n = \mathbf{w}^T\mathbf{p} + b \geq 0$ and 0 otherwise; i.e., when $n = \mathbf{w}^T\mathbf{p} + b < 0$.  Hence, with their targets of 1, set
+\begin{align}
+\mathbf{w}^T\mathbf{p}_1 + b = 2w_2 + b \geq 0 \label{1}\\
+\mathbf{w}^T\mathbf{p}_2 + b =  w_1 + b \geq 0, \label{2}
+\end{align}
+and similarly, with their targets of 0, set
+\begin{align}
+\mathbf{w}^T\mathbf{p}_3 + b = -2w_2 + b < 0 \label{3} \\
+\mathbf{w}^T\mathbf{p}_4 + b =  2w_1 + b < 0. \label{4}
+\end{align}
+Unfortunately, it doesn't seem as if there is an easy way to bound each of $w_1$, $w_2$, and $b$ individually.  However, observe that equation pair (\ref{2}) and (\ref{4}) describes $w_1$ and $b$, while equation pair (\ref{1}) and (\ref{3}) describes $w_2$ and $b$.  Examine each pair graphically, depicting the inequalities of each.  
+
+The figure below depicts pairings of inequalities (\ref{1}) and (\ref{3}), or those that include $(w_1, b)$, and inequalities (\ref{2}) and (\ref{4}), or those that include $(w_2, b)$.  The shaded regions depict positive areas where each inequality is true.  Darker shades depict areas in which both inequalities are true.  Note that both plots communicate that the bias $b$ must be positive, implying concordance between both.  
+
+The underlying lattice suggested by the white grid along each of the $x$- and $y$-axes suggests several integral candiates for the weights $w_1$ and $w_2$ and bias $b$.  For example, the $(b, w_1)$ plot on the left suggests $(10, -10)$ as a candidate.  Note that this is a valid value here because the inequality edge on which this point falls is not strict; i.e., it is a solid line.  The right plot suggests, given that $b = 10$ is now fixed, a value of $10$, say, for $w_2$.  Thus, $\mathbf{w}^T = [w_1 \,\, w_2] = [-10 \,\, 10]$ and $b = 10$ constitute a valid trio of values.  It is easy to check that these values ensure that each of $\mathbf{p}_1, \cdots, \mathbf{p}_4$ classify correctly. 
+
+<!-- out.extra = 'angle=90',  -->
+<!-- \begin{landscape} -->
+```{r, echo=FALSE, message=FALSE, results='hide', fig.keep='all', out.width = '100%', out.height='100%', fig.cap="A graphical depiction of four linearly separable classes via two perceptrons. Yellow and cyan areas depict regions meeting the depicted equations, with the green region meeting both criteria. The black dot communicates the valid example of $\\mathbf{w} = [-10 \\,\\, 10]$ and $b = 10$ provided."}
+
+f1 <- function(b) -b/2   # 1
+f3 <- function(b)  b/2   # 3
+f2 <- function(b) -b     # 2
+f4 <- function(b) -b/2   # 4
+
+b <- seq(-20, 20, 0.01)  # b x-axis in both plots. 
+tib1 <- tibble(b = b, f1 = f1(b), f3 = f3(b))
+
+tib1_over_f1 <- tib1 %>% 
+  select(b, f1) %>% 
+  tibble::add_row(b = c(max(b), min(b)),
+                  f1 = c(Inf, Inf))
+
+tib1_over_f3 <- tib1 %>% 
+  select(b, f3) %>% 
+  tibble::add_row(b = c(max(b), min(b)),
+                  f3 = c(Inf, Inf))
+
+p1 <- ggplot2::ggplot(tib1) + 
+  ggplot2::geom_line(data = tib1 %>% select(b, f1), ggplot2::aes(x = b, y = f1)) + 
+  ggplot2::geom_line(data = tib1 %>% select(b, f3), ggplot2::aes(x = b, y = f3), lty = 2) + 
+  ggplot2::geom_point(ggplot2::aes(x = 10, y = 10)) +   
+  ggplot2::geom_polygon(data = tib1_over_f1, ggplot2::aes(x = b, y = f1), fill = "cyan", alpha = 0.20) + 
+  ggplot2::geom_polygon(data = tib1_over_f3, ggplot2::aes(x = b, y = f3), fill = "yellow", alpha = 0.20) + 
+  ggplot2::coord_cartesian(xlim = c(-15, 15), ylim = c(-15, 15)) + 
+  ggplot2::labs(title = TeX(r'(Comparison of inequalities with $(b$, $w_2)$.)'), 
+                subtitle = TeX(r'(The black dot at $(10, 10)$ meets the criteria of both inequalities.)'), 
+                caption = "") + 
+  ggplot2::xlab(TeX(r'($b$)')) +  
+  ggplot2::ylab(TeX(r'($w_2$)')) +  
+  ggplot2::scale_x_continuous(breaks = seq(min(b), max(b), 5), minor_breaks = seq(min(b), max(b), 1)) +
+  ggplot2::scale_y_continuous(limits = c(-20, 20), breaks = seq(-20, 20, 5), minor_breaks = seq(-20, 20, 1)) +
+  ggplot2::annotate("text", x = -10, y = -3.5, label = TeX(r'($-2w_2 + b < 0$)', output = 'character'), size = 3, parse = TRUE, angle = 32) + 
+  ggplot2::annotate("text", x = 10, y = -4.0, label = TeX(r'($2w_2 + b \geq 0$)', output = 'character'), size = 3, parse = TRUE, angle = -30) + 
+  ggplot2::theme(text = ggplot2::element_text(size = 7), 
+                 aspect.ratio = 1)
+  
+b <- seq(-20, 20, 0.01)  # b x-axis in both plots.
+tib2 <- tibble(b = b, f2 = f2(b), f4 = f4(b))
+
+tib2_under_f2 <- tib2 %>%
+  select(b, f2) %>%
+  tibble::add_row(b = c(max(b), min(b)),
+                  f2 = c(-Inf, -Inf))
+
+tib2_over_f2 <- tib2 %>%
+  select(b, f2) %>%
+  tibble::add_row(b = c(max(b), min(b)),
+                  f2 = c(Inf, Inf))
+
+tib2_under_f4 <- tib2 %>%
+  select(b, f4) %>%
+  tibble::add_row(b = c(max(b), min(b)),
+                  f4 = c(-Inf, -Inf))
+
+p2 <- ggplot2::ggplot(tib2) +
+  ggplot2::geom_line(data = tib2 %>% select(b, f2), ggplot2::aes(x = b, y = f2)) +
+  ggplot2::geom_line(data = tib2 %>% select(b, f4), ggplot2::aes(x = b, y = f4), lty = 2) + 
+  ggplot2::geom_point(ggplot2::aes(x = 10, y = -10)) + 
+  ggplot2::geom_polygon(data = tib2_over_f2, ggplot2::aes(x = b, y = f2), fill = "cyan", alpha = 0.20) +
+  ggplot2::geom_polygon(data = tib2_under_f4, ggplot2::aes(x = b, y = f4), fill = "yellow", alpha = 0.20) +
+  ggplot2::coord_cartesian(xlim = c(-15, 15), ylim = c(-15, 15)) + 
+  ggplot2::labs(title = TeX(r'(Comparison of inequalities with $(b$, $w_1)$.)'),
+                subtitle = TeX(r'(The black dot at $(10, -10)$ meets the criteria of both inequalities.)'), 
+                caption = "") + #expression(paste("SOURCE: Hagan, Demuth, Beale, de Jesús. ", italic("Neural Network Design"), ". 2nd ed. Oklahoma: Martin Hagan, 2014."))) +
+  ggplot2::xlab(TeX(r'($b$)')) +
+  ggplot2::ylab(TeX(r'($w_1$)')) +
+  ggplot2::scale_x_continuous(breaks = seq(min(b), max(b), 5), minor_breaks = seq(min(b), max(b), 1)) +
+  ggplot2::scale_y_continuous(limits = c(-20, 20), breaks = seq(-20, 20, 5), minor_breaks = seq(-20, 20, 1)) +
+  ggplot2::annotate("text", x = -9, y = 10.5, label = TeX(r'($w_1 + b \geq 0$)', output = 'character'), size = 3, parse = TRUE, angle = -45) +
+  ggplot2::annotate("text", x = -10, y = 2.5, label = TeX(r'($w_1 + \frac{b}{2} < 0$)', output = 'character'), size = 3, parse = TRUE, angle = -25) +
+  ggplot2::theme(text = ggplot2::element_text(size = 7), 
+                 aspect.ratio = 1)
+
+gridExtra::grid.arrange(p2, p1, ncol = 2)
+```
+<!-- \end{landscape} -->
+
+
+**P4.3**. **We have a classification problem with four classes of input vector.  The four classes are **
+\begin{align*}
+\text{class 1:} \left\{\mathbf{p}_1 = \begin{bmatrix}
+    1 \\
+    1 \end{bmatrix}, \mathbf{p}_2 = \begin{bmatrix}
+    1 \\
+    2 \end{bmatrix}\right\}&, 
+\text{class 2:} \left\{\mathbf{p}_3 = \begin{bmatrix}
+    2 \\
+    -1 \end{bmatrix}, \mathbf{p}_4 = \begin{bmatrix}
+    2 \\
+    0 \end{bmatrix}\right\},\\
+\text{class 3:} \left\{\mathbf{p}_5 = \begin{bmatrix}
+    -1 \\
+    2 \end{bmatrix}, \mathbf{p}_6 = \begin{bmatrix}
+    -2 \\
+    1 \end{bmatrix}\right\}&,
+\text{class 4:} \left\{\mathbf{p}_7 = \begin{bmatrix}
+    -1 \\
+    -1 \end{bmatrix}, \mathbf{p}_8 = \begin{bmatrix}
+    -2 \\
+    -2 \end{bmatrix}\right\}.
+\end{align*}
+**Design a perceptron network to solve this problem.**
+
+**Answer.** Note that this question only requires the set-up of the perceptron network.  Problem **P4.5** asks for its full implementation.  
+
+The perceptron network solves linearly separable problems.  Thus, assuming separability, one linear decision boundary from one perceptron cleanly separates two classes.  Assuming separability (and non-parallel weight vectors $\mathbf{w}_1$ and $\mathbf{w}_2$, $\mathbf{w}_1 \neq k\mathbf{w}_2$, $k \in \mathbb{R}$), two decision boundaries can classify four linearly separable classes.  Note that two parallel weight vectors $\mathbf{w}_1$ and $\mathbf{w}_2$, with $\mathbf{w}_1 = k\mathbf{w}_2$, $k \in \mathbb{R}$ with $k \neq 1$, separates three classes. 
+
+In this case, since each input vector $\mathbf{p} \in \mathbb{R}^2$, a graph easily assesses linear separability.  The figure legend below identifies each class and also depicts two possible linear decision boundaries.  This means that the desired perceptron requires two neurons.  Thus, the weight matrix $\mathbf{W}$ must have two rows.  Additionally, given that each input $\mathbf{p}$ is of size two, the number of columns of $\mathbf{W}$ is two as well.  So, $\mathbf{W}$ is of size $2\times2$.  Finally, again because of the two neurons, the bias $\mathbf{b}$ is a column vector of size 2.  
+
+Manipulation of the two equations, here $x = 0$ for line 1, and $y = 2x$ for line 2, identifies the necessary entries for $\mathbf{W}$ and $\mathbf{b}$.  To build $\mathbf{W}$, recall that $\mathbf{W} = \begin{bmatrix} \mathbf{w}^T_1 \\ \mathbf{w}^T_2 \end{bmatrix}$ represents the weights in terms of each of the two neurons.  Information from line 1 contains the necessary data to fill in row $\mathbf{w}_1^T$ for the first neuron, with similar logic applying to the second.  
+
+Recall from algebra that the slope $m_A$ of a line in $\mathbf{R}^2$ times the slope $m_B$ of the line perpendicular to it equals $-1$; i.e., $m_Am_B = -1$.  Applied here, this means that the slope of each of the provided linear decision boundary, times the slope of the lines perpendicular to them, or their weight vectors, must equal $-1$.  For example, the positive slope of $1/2$ of line 2 suggests a weight vector $\mathbf{w}^T_2 = [-1 \,\, 2]$ (or $[1 \,\, -2]$).  Since the slope of a line pointing in the same direction as $\mathbf{w}^T_2$ in this case equals $\frac{2}{-1} = \frac{-2}{1} = -2$, it's easy to see that $\frac{1}{2}\times -2 = -1$.  Additionally, the positive (or negative) infinite slope of line 1 means its corresponding weight vector $\mathbf{w}^T_1$ must have a slope of 0.  So, $\mathbf{w}^T_1 = [1 \,\, 0]$ (or [-1 \,\, 0]).  
+
+Finally, the selection of linear decision boundaries through the origin ensures that the $y$-intercept of both lines is zero.  Thus, $\mathbf{b} = \mathbf{0}$.  
+
+Putting it all together then, $\mathbf{W} = \begin{bmatrix} \mathbf{w}^T_1 \\ \mathbf{w}^T_2 \end{bmatrix} = \begin{bmatrix*}[r] 1 & 0 \\ 1 & -2 \end{bmatrix*}$ and $\mathbf{b} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$ serves as the weight matrix and bias, respectively, of a two-neuron perceptron capable of classifying the 4 provided input points. 
+
+\vspace{5mm}
+```{r, echo = FALSE, message = FALSE, results = 'hide', fig.keep = 'all', out.width = '80%', fig.align = 'center', fig.cap="A graphical representation of a four-class, two-neuron perceptron in $\\mathbf{R}^2$. Assuming the use of a \\texttt{hardlim} activation function $f(n)$, red depicts positive line-2 regions corresponding to $f(n) = 1$, while yellow depicts the same for line 1.  Orange depicts the area for which $f(n) = 1$ for each of the two linear decision boundaries, with gray depicting the region encompassing the two regions for which $f(n) = 0$."}
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+  
+# n = 4
+# cols = gg_color_hue(n)
+
+# dev.new(width = 4, height = 4)
+# plot(1:n, pch = 16, cex = 2, col = cols)
+
+tib1 <- tibble::tibble(x = c(1, 1, 2, 2, -1, -2, -1, -2), 
+                       y = c(1, 2, -1, 0, 2, 1, -1, -2), 
+                       t = c(1, 1, 2, 2, 3, 3, 4, 4))
+
+xl1 <- seq(-4, 4, 0.01)
+yl1 <- 0.5 * xl1
+l1 <- tibble::tibble(x = xl1, y = yl1)
+
+xl2 <- rep(0, 30)
+yl2 <- seq(-4, 4, length.out = 30)
+l2 <- tibble::tibble(x = xl2, y = yl2)
+
+over_l1 <- l1 %>% 
+  tibble::add_row(x = c(max(xl1), min(xl1)),
+                  y = c(Inf, Inf))
+
+over_l2 <- l2 %>% 
+  tibble::add_row(y = c(Inf, -Inf), #max(yl2), min(yl2)),
+                  x = c(Inf, Inf))
+
+p1 <- ggplot2::ggplot(tib1) + 
+  ggplot2::geom_point(ggplot2::aes(x = x, y = y, shape = factor(t)), alpha = 0.80, size = 6) + 
+  ggplot2::geom_line(data = l1, ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_line(data = l2, ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_polygon(data = over_l1, ggplot2::aes(x = x, y = y), fill = "red", alpha = 0.20) +
+  ggplot2::geom_polygon(data = over_l2, ggplot2::aes(x = x, y = y), fill = "yellow", alpha = 0.20, inherit.aes = FALSE) +
+  ggplot2::coord_cartesian(xlim = c(-3, 3), ylim = c(-3, 3)) + 
+  ggplot2::labs(title = 'Linearly Separable Four-Class Two-Neuron Perceptron', 
+                subtitle = "Lines indicate decision boundaries of convenience.", 
+                caption = "", 
+                color = "Class", 
+                shape = "Class") + 
+  ggplot2::scale_x_continuous(limits = c(-5, 5)) + 
+  ggplot2::scale_y_continuous(limits = c(-5, 5)) + 
+  ggplot2::annotate("text", x = -2, y = -0.75, label = 'line 2', size = 2) + 
+  ggplot2::annotate("text", x = 0.33, y = -2, label = 'line 1', size = 2) + 
+  ggplot2::theme(text = ggplot2::element_text(size = 7), 
+                 aspect.ratio = 1) + 
+  ggplot2::scale_shape_manual(name = "Class", values = c(15, 16, 17, 18)) + 
+  ggplot2::scale_color_manual(name = "Class", values = rep("black", 4)) 
+
+gridExtra::grid.arrange(p1, nrow = 1)
+ 
+```
+
+
+**P4.4**. **Solve the following classification problem with the perceptron rule.  Apply each input vector in order, for as many repetitions as it takes to ensure that the problem is solved.  Draw a graph of the problem only after you have found a solution.**
+\begin{align*}
+\left\{\mathbf{p}_1 = \begin{bmatrix}
+    2 \\
+    2 \end{bmatrix}, t_1 = 0\right\}, 
+\left\{\mathbf{p}_2 = \begin{bmatrix}
+    1 \\
+    -2 \end{bmatrix}, t_2 = 1\right\},
+\left\{\mathbf{p}_3 = \begin{bmatrix}
+    -2 \\
+    2 \end{bmatrix}, t_3 = 0\right\},
+\left\{\mathbf{p}_4 = \begin{bmatrix}
+    -1 \\
+    1 \end{bmatrix}, t_4 = 1\right\}
+\end{align*}
+**Use the initial weights and bias: **
+\begin{align*}
+\mathbf{W}(\mathbf{0}) = [0 \,\, 0] \hspace{2cm} b(0) = 0.
+\end{align*}
+
+**Answer.** blah blah   
+
+
+
+**P4.5** **Consider again the four-class decision problem that we introduced in Problem P4.3.  Train a perceptron network to solve this problem using the perceptron learning rule.**
+
+To start, take the $\mathbf{p}$ from Problem \mathbf{P4.3} and assign each to a distinct target vector.  Note that because four classes are needed, and a one-neuron perceptron classifies at most two classes, a solution requires two neurons.  So, each target $\mathbf{t}$ will be a vector in $\mathbf{R}^2$.  Set up the provided $Q = 8$ data points in the training set, along with target vectors, as 
+
+\begin{align*}
+\text{class 1:} \left\{\mathbf{p}_1 = \begin{bmatrix}
+    1 \\
+    1 \end{bmatrix}\right\}, \mathbf{p}_2 = \begin{bmatrix}
+    1 \\
+    2 \end{bmatrix}\right\}&, 
+\text{class 2:} \left\{\mathbf{p}_3 = \begin{bmatrix}
+    2 \\
+    -1 \end{bmatrix}\right\}, \mathbf{p}_4 = \begin{bmatrix}
+    2 \\
+    0 \end{bmatrix}\right\},\\
+\text{class 3:} \left\{\mathbf{p}_5 = \begin{bmatrix}
+    -1 \\
+    2 \end{bmatrix}\right\}, \mathbf{p}_6 = \begin{bmatrix}
+    -2 \\
+    1 \end{bmatrix}\right\}&,
+\text{class 4:} \left\{\mathbf{p}_7 = \begin{bmatrix}
+    -1 \\
+    -1 \end{bmatrix}\right\}, \mathbf{p}_8 = \begin{bmatrix}
+    -2 \\
+    -2 \end{bmatrix}\right\}.
+\end{align*}
+
+```{r, echo = FALSE, message = FALSE, results = 'hide'}
+p <- list(c(1, 1), c(1, 2), c(2, -1), c(2, 0), c(-1, 2), c(-2, 1), c(-1, -1), c(-2 ,-2))
+t <- list(c(0, 0), c(0, 0), c(0, 1), c(0, 1), c(1, 0), c(1, 0), c(1, 1), c(1, 1))
+verbose <- TRUE
+W_0 <- matrix(c(1, 0, 0, 1), ncol = 2)
+b_0 <- c(1, 1)
+ans <- perceptron(p, t, verbose, W_0, b_0)
+```
+
+
+
+
+
+
