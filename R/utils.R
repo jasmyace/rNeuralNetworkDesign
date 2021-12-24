@@ -21,5 +21,96 @@ beta_fn <- function(g_k, g_km1, p_km1, beta) {
 }
 
 
+#' @importFrom dplyr bind_rows mutate rowwise select
+#' @importFrom ggplot2 aes coord_fixed element_blank geom_contour geom_point geom_segment ggplot labs theme 
+#' @importFrom magrittr %>%
+#' @importFrom metR geom_text_contour
+#' @importFrom purrr rdunif
+#' @importFrom rlang .data
+#' @importFrom stats as.formula deriv runif setNames
+#' @importFrom tibble as_tibble
+#' @importFrom tidyr pivot_wider
+#' @importFrom utils globalVariables tail 
 
 
+
+
+
+utils::globalVariables(c(".", ".data"))
+
+
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+logsig <- function(W, b, p){
+  n <- W %*% p + b
+  a <- 1 / (1 + exp(-n))
+  deriv <- a * (1 - a)
+  return(list(a = a, deriv = deriv))
+}
+
+purelin <- function(W, b, p){
+  n <- W %*% p + b
+  a <- n
+  deriv <- 1
+  return(list(a = a, deriv = deriv))
+}
+
+hardlim <- function(W, b, p){
+  n <- W %*% p + b
+  a <- ifelse(n >= 0, 1, 0)   # these can vary?
+  deriv <- -99
+  return(list(a = a, deriv = deriv))
+}
+
+hardlims <- function(W, b, p){
+  n <- W %*% p + b
+  a <- ifelse(n >= 0, 1, -1)
+  deriv <- -99
+  return(list(a = a, deriv = deriv))
+}
