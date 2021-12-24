@@ -21,17 +21,16 @@ beta_fn <- function(g_k, g_km1, p_km1, beta) {
 }
 
 
-#' @importFrom dplyr bind_rows mutate rowwise select
-#' @importFrom ggplot2 aes coord_fixed element_blank geom_contour geom_point geom_segment ggplot labs theme 
+#' @importFrom dplyr bind_rows cur_group_id distinct group_by left_join mutate pull rowwise select ungroup 
+#' @importFrom ggplot2 aes coord_cartesian coord_fixed element_blank geom_contour geom_line geom_point geom_polygon geom_segment ggplot labs scale_shape_manual theme 
 #' @importFrom magrittr %>%
 #' @importFrom metR geom_text_contour
 #' @importFrom purrr rdunif
 #' @importFrom rlang .data
 #' @importFrom stats as.formula deriv runif setNames
-#' @importFrom tibble as_tibble
-#' @importFrom tidyr pivot_wider
+#' @importFrom tibble add_row as_tibble enframe tibble 
+#' @importFrom tidyr pivot_wider unnest 
 #' @importFrom utils globalVariables tail 
-
 
 
 
@@ -44,46 +43,6 @@ gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
