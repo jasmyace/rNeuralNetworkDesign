@@ -17,6 +17,15 @@
 #'
 #' @param yhi The maximum value to display with respect to the \eqn{y}-axis.
 #'
+#' @param title A character string titling the resulting plot.  Default is
+#'   \code{"Perceptron Plot"}.
+#'
+#' @param subtitle A character string subtitling the resulting plot.  Default is
+#'   \code{""}.
+#'
+#' @param caption A character string captioning the resulting plot.  Default is
+#'   \code{""}.
+#'   
 #' @param repper An integer giving the number of points to use to display linear
 #'   decision boundaries.  Resulting piecewise segments numbers \code{repper -
 #'   1}.
@@ -69,13 +78,16 @@
 #' 
 #' plot_perceptron(ans, -5, 5, -5, 5)}
 
-plot_perceptron <- function(ans, xlo, xhi, ylo, yhi, repper=100){
+plot_perceptron <- function(ans, xlo, xhi, ylo, yhi, title="A Perceptron", subtitle="", caption="", repper=100){
   
   # ans <- ans
   # xlo <- -5
   # xhi <- 5
   # ylo <- -5
   # yhi <- 5
+  # title <- "" 
+  # subtitle <- "" 
+  # caption <- ""
   # repper <- 100
   
   # Pull out important pieces.  
@@ -179,9 +191,10 @@ plot_perceptron <- function(ans, xlo, xhi, ylo, yhi, repper=100){
   p1 <- p1 + 
     ggplot2::geom_point(ggplot2::aes(x = x, y = y, shape = factor(class)), alpha = 1.00, size = 8) +  
     ggplot2::coord_cartesian(xlim = c(-3, 3), ylim = c(-3, 3)) + 
-    ggplot2::labs(title = 'Linearly Separable\nFour-Class Two-Neuron Perceptron', 
-                  subtitle = "Lines indicate decision boundaries of convenience.", 
-                  caption = "",  
-                  shape = "Class")
+    ggplot2::labs(title = title, 
+                  subtitle = subtitle, 
+                  caption = caption,  
+                  shape = "Class") + 
+    ggplot2::theme(aspect.ratio = 1)
   print(p1)
 }

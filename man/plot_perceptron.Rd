@@ -2,28 +2,60 @@
 % Please edit documentation in R/plot_perceptron.R
 \name{plot_perceptron}
 \alias{plot_perceptron}
-\title{jk}
+\title{Display perceptron results for two-dimensional targets.}
 \usage{
 plot_perceptron(ans, xlo, xhi, ylo, yhi, repper = 100)
 }
 \arguments{
-\item{ans}{jk}
+\item{ans}{A result originating from a call to package function
+\code{perceptron}.}
 
-\item{xlo}{jk}
+\item{xlo}{The minimum value to display with respect to the \eqn{x}-axis.}
 
-\item{xhi}{jk}
+\item{xhi}{The maximum value to display with respect to the \eqn{x}-axis.}
 
-\item{ylo}{jk}
+\item{ylo}{The minimum value to display with respect to the \eqn{y}-axis.}
 
-\item{yhi}{jk}
+\item{yhi}{The maximum value to display with respect to the \eqn{y}-axis.}
 
-\item{repper}{jk}
+\item{repper}{An integer giving the number of points to use to display linear
+decision boundaries.  Resulting piecewise segments numbers \code{repper -
+  1}.}
 }
 \description{
-jk
+Display perceptron results in two-dimensional space via
+two-dimensional targets.  Decision boundaries, valid regions, and training
+data are included.
 }
 \details{
-jk
+Function \code{plot_perceptron} assumes target vectors are
+two-dimensional, i.e., \eqn{\mathbf{t} \in \mathbb{R}^2}, so as to induce
+ease in depicting graphical results.  Currently, the function assumes that
+no more than 26 distinct classes are to be included.
+
+Output from function \code{perceptron} includes a final weights matrix
+\eqn{\mathbf{W}} and bias vector \eqn{\mathbf{b}}, each of which
+contributes to plotting final linear decision boundaries.  Note that the
+\eqn{i^{th}} neuron corresponds to the \eqn{i^{th}} row of
+\eqn{\mathbf{W}}, say \eqn{\mathbf{w}_i^T} and bias vector
+\eqn{\mathbf{b}}, or \eqn{b_i}.  From these, a linear decision boundary can
+be found.
+
+To see this, let \eqn{\mathbf{w}_i^T = [A_i \,\, B_i]} and \eqn{b_i = c_i},
+so that the \eqn{i^{th}} decision boundary has equation \eqn{\mathbf{w}_i^T
+  \begin{bmatrix} 1 \\ 1 \end{bmatrix} + b_i = 0}, or \eqn{A_i x_i + B_i y_i
+  + c_i = 0}.  Simple rearrangement into the traditional line form of \eqn{y
+  = mx + b} leads to \eqn{y_i = -\frac{A_i}{B_i}x - \frac{c_i}{B}}.  Thus,
+the decision boundary of the \eqn{i^{th}} neuron has slope
+\eqn{-\frac{A_i}{B_i}} and y-intercept \eqn{- \frac{c_i}{B}}.
+
+Function \code{perceptron_plot} uses these derived values of the slope and
+y-intercept to then draw linear decision boundaries.  Colored regions
+always correspond to areas greater than the given line.  In the case of a
+vertical line, the colored region subsumes \eqn{+\infty} if the weight row
+vector \eqn{\mathbf{w}_i^T} points towards \eqn{-\infty} along the
+\eqn{y}-axis, with the opposite true when \eqn{\mathbf{w}_i^T} points
+positively along the \eqn{y}-axis.
 }
 \examples{
 \dontrun{
@@ -35,4 +67,15 @@ b_0 <- c(1, 1)
 ans <- perceptron(p, t, verbose, W_0, b_0)
 
 plot_perceptron(ans, -5, 5, -5, 5)}
+}
+\references{
+Martin T. Hagan, Howard B. Demuth, Mark H. Beale and Orlando De
+Jesús. 2014. Neural Network Design (2nd. ed.). Martin Hagan, Stillwater,
+OK, USA.
+}
+\seealso{
+\code{perceptron}
+}
+\author{
+Jason Mitchell
 }

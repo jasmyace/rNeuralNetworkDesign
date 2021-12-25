@@ -56,12 +56,14 @@
 #'   
 #' @examples 
 #' \dontrun{
-#' # p <- list(matrix(c(2, 2), ncol=1), matrix(c(1, -2), ncol=1), matrix(c(-2, 2), ncol=1), matrix(c(-1, 1), ncol=1))
+#' p <- list(matrix(c(2, 2), ncol=1), matrix(c(1, -2), ncol=1), 
+#' matrix(c(-2, 2), ncol=1), matrix(c(-1, 1), ncol=1))
 #' t <- list(0, 1, 0, 1)
 #' verbose <- TRUE
 #' perceptron(p, t, verbose)
 #' 
-#' p <- list(matrix(c(0, 2), ncol=1), matrix(c(1, 0), ncol=1), matrix(c(0, -2), ncol=1), matrix(c(2, 0), ncol=1))
+#' p <- list(matrix(c(0, 2), ncol=1), matrix(c(1, 0), ncol=1), 
+#' matrix(c(0, -2), ncol=1), matrix(c(2, 0), ncol=1))
 #' t <- list(1, 1, 0, 0)
 #' verbose <- TRUE
 #' perceptron(p, t, verbose)
@@ -137,12 +139,12 @@ perceptron <- function(p, t, verbose=FALSE, W_0=NULL, b_0=NULL){
 }
 
 
-# 
-# 
-# 
-# p <- list(c(1, 1), c(1, 2), c(2, -1), c(2, 0), c(-1, 2), c(-2, 1), c(-1, -1), c(-2 ,-2))
-# t <- list(c(0, 0), c(0, 0), c(0, 1), c(0, 1), c(1, 0), c(1, 0), c(1, 1), c(1, 1))
-# verbose <- TRUE
-# W_0 <- matrix(c(1, 0, 0, 1), ncol = 2)
-# b_0 <- c(1, 1)
-# perceptron(p, t, verbose, W_0, b_0)
+p <- list(c(2, 2), c(1, -2), c(-2, 2), c(-1, 1))
+t <- list(0, 1, 0, 1)
+verbose <- TRUE
+W_0 <- matrix(c(0, 0), ncol = 2)
+b_0 <- 0
+ans <- perceptron(p, t, verbose, W_0, b_0)
+
+plot_perceptron(ans, -3, 3, -3, 3, 
+                title = "Linearly Separable\nTwo-Class Perceptron")
